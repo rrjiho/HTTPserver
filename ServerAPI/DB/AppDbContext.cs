@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServerAPI.Entities;
 
 namespace ServerAPI.DB
 {
@@ -12,18 +13,7 @@ namespace ServerAPI.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Resources>()
-                .HasKey(r => r.UserId);
-
-            modelBuilder.Entity<Resources>()
-                .HasOne(r => r.User) 
-                .WithOne(u => u.Resources) 
-                .HasForeignKey<Resources>(r => r.UserId);
-
-            modelBuilder.Entity<Ranking>()
-                .HasOne(r => r.User)
-                .WithOne(u => u.Ranking)
-                .HasForeignKey<Ranking>(r => r.UserId); 
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }

@@ -6,6 +6,7 @@ using ServerAPI.Models;
 using StackExchange.Redis;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using ServerAPI.Entities;
 
 namespace ServerAPI.Services
 {

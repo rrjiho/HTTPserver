@@ -1,4 +1,4 @@
-﻿using ServerAPI.DB;
+﻿using ServerAPI.Entities;
 using ServerAPI.Models;
 
 namespace ServerAPI.Services

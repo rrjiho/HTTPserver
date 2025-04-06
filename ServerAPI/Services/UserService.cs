@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServerAPI.DB;
+using ServerAPI.Entities;
 using ServerAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
