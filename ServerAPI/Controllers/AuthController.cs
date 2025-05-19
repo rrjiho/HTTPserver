@@ -50,24 +50,24 @@ namespace ServerAPI.Controllers
         [Authorize]
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
-        {   
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var user = await _userService.GetProfileAsync(userId);
                 var resources = await _userService.GetResourcesAsync(userId);
                 return Ok(new { user.Username, user.Level, user.Experience, user.Strength, 
                     user.Agility, user.Intelligence, resources.Gold, resources.Gems });
             }
-            catch (ArgumentException e) 
-            {
-                Console.WriteLine($"Error: {e.Message}");
-                return BadRequest(e.Message);
-            }
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
-                return NotFound(e.Message);
+                return StatusCode(500, e.Message);
             }
             
         }
@@ -76,9 +76,14 @@ namespace ServerAPI.Controllers
         [HttpPost("addexp")]
         public async Task<IActionResult> AddExperience([FromBody] AddExpDto dto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 await _userService.AddExperienceAsync(userId, dto.Experience);
                 var user = await _userService.GetProfileAsync(userId);
                 return Ok(new { LevelUp = user.Experience >= 100, user.Level, user.Experience });
@@ -86,7 +91,7 @@ namespace ServerAPI.Controllers
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
-                return NotFound(e.Message);
+                return StatusCode(500, e.Message);
             }
             
         }
@@ -95,9 +100,14 @@ namespace ServerAPI.Controllers
         [HttpGet("resources")]
         public async Task<IActionResult> GetResources()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var resources = await _userService.GetResourcesAsync(userId);
                 return Ok(new { resources.Gold, resources.Gems });
             }
@@ -112,9 +122,14 @@ namespace ServerAPI.Controllers
         [HttpPost("addresources")]
         public async Task<IActionResult> AddResources([FromBody] ResourcesDto dto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 await _userService.AddResourcesAsync(userId, dto.Gold, dto.Gems);
                 var resources = await _userService.GetResourcesAsync(userId);
                 return Ok(new { resources.Gold, resources.Gems });
@@ -131,9 +146,14 @@ namespace ServerAPI.Controllers
         [HttpPost("useresource")]
         public async Task<IActionResult> UseResources([FromBody] ResourcesDto dto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 await _userService.UseResourcesAsync(userId, dto.Gold, dto.Gems);
                 var resources = await _userService.GetResourcesAsync(userId);
                 return Ok(new { resources.Gold, resources.Gems });

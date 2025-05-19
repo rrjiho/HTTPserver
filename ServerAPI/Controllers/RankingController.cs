@@ -35,16 +35,21 @@ namespace ServerAPI.Controllers
         [HttpGet("myrank")]
         public async Task<IActionResult> GetMyRanking()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Log in is required.");
+            }
+
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var ranking = await _rankingService.GetMyRankingAsync(userId);
                 return Ok(ranking);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
-                return NotFound(e.Message);
+                return StatusCode(500, e.Message);
             }
         }
 
